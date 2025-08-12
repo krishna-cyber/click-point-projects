@@ -116,6 +116,7 @@ const ContentTable = () => {
   return (
     <Table
       rowSelection={rowSelection}
+      bordered
       pagination={{
         size: "small",
         total: 50,
