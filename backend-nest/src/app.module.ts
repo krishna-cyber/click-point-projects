@@ -1,0 +1,29 @@
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
+import { CategoryModule } from './category/category.module';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { ContentsModule } from './contents/contents.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MongooseModule.forRoot(process.env.MONGODB_URI!),
+    DevtoolsModule.register({
+      http: process.env.NODE_ENV !== 'production',
+    }),
+    UsersModule,
+    CategoryModule,
+    AuthModule,
+    ContentsModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
