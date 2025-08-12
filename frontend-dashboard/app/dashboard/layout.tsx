@@ -1,14 +1,17 @@
 "use client";
 import { Button, Layout, Menu, theme, Avatar } from "antd";
-import React, { useState } from "react";
+
+import React, { useState, useMemo } from "react";
 import {
   Blocks,
   LayoutDashboard,
   Menu as MenuIcon,
+  MenuSquare,
   NotebookPen,
   User,
   Users,
 } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 const { Header, Sider, Content } = Layout;
 
 interface LayoutPageProps {
@@ -16,6 +19,26 @@ interface LayoutPageProps {
 }
 
 const LayoutPage: React.FC<LayoutPageProps> = ({ children }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const selectedKey = useMemo(() => {
+    if (pathname === "/dashboard/users") {
+      return "2";
+    } else if (pathname === "/dashboard/category") {
+      return "3";
+    } else if (
+      pathname === "/dashboard/content" ||
+      pathname === "/dashboard/contents"
+    ) {
+      return "4";
+    } else if (pathname === "/dashboard") {
+      return "1";
+    } else {
+      return "1"; // Default to dashboard
+    }
+  }, [pathname]);
+
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -32,27 +55,39 @@ const LayoutPage: React.FC<LayoutPageProps> = ({ children }) => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={["1"]}
+          selectedKeys={[selectedKey]}
           items={[
             {
               key: "1",
               icon: <LayoutDashboard />,
               label: "Dashboard",
+              onClick: () => {
+                router.push("/dashboard");
+              },
             },
             {
               key: "2",
               icon: <Users />,
               label: "Users",
+              onClick: () => {
+                router.push("/dashboard/users");
+              },
             },
             {
               key: "3",
               icon: <Blocks />,
               label: "Category",
+              onClick: () => {
+                router.push("/dashboard/category");
+              },
             },
             {
               key: "4",
               icon: <NotebookPen />,
               label: "Contents",
+              onClick: () => {
+                router.push("/dashboard/content");
+              },
             },
           ]}
         />
@@ -68,7 +103,7 @@ const LayoutPage: React.FC<LayoutPageProps> = ({ children }) => {
         >
           <Button
             type="text"
-            icon={collapsed ? <MenuIcon /> : <MenuIcon />}
+            icon={collapsed ? <MenuSquare /> : <MenuIcon />}
             onClick={() => setCollapsed(!collapsed)}
             style={{
               fontSize: "16px",
