@@ -3,6 +3,7 @@ import { UsersService } from 'src/users/users.service';
 import { LoginAuthDTO } from './dto/login-auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -14,15 +15,22 @@ export class AuthService {
 
   async signIn(loginCredentials: LoginAuthDTO) {
     const user = await this.userService.findOne(loginCredentials.email);
-    if (user?.password !== loginCredentials.password) {
-      throw new UnauthorizedException();
+
+    const isPasswordMatch = await bcrypt.compare(
+      loginCredentials.password,
+      user?.password as string,
+    );
+
+    if (!isPasswordMatch) {
+      throw new UnauthorizedException('Credentials do not match');
     }
 
-    const { password, ...result } = user;
+    const payload = {
+      sub: user?._id,
+      email: user?.email,
+      username: user?.name,
+    };
 
-    const payload = { sub: result._id, username: result.name };
-    // TODO: Generate a JWT and return it here
-    // instead of the user object
     return {
       access_token: await this.jwtService.signAsync(payload),
       refresh_token: await this.jwtService.signAsync(payload, {

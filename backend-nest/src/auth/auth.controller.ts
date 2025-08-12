@@ -23,7 +23,6 @@ export class AuthController {
     try {
       const { access_token, refresh_token } =
         await this.authService.signIn(loginCredentials);
-      console.log(access_token);
 
       response.cookie('accessToken', access_token, {
         httpOnly: true,
@@ -39,7 +38,9 @@ export class AuthController {
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000), //1d
       });
 
-      response.json({ message: 'login successful' });
+      response.json({
+        message: 'login successful',
+      });
     } catch (error) {
       console.error('Login error:', error);
       throw new UnauthorizedException('Invalid credentials');

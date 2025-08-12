@@ -24,6 +24,8 @@ export async function login(previousState: PreviousState, formData: FormData) {
       }
     );
 
+    console.log(response.data);
+
     const setCookieHeaders = response.headers["set-cookie"];
 
     if (!setCookieHeaders) {
