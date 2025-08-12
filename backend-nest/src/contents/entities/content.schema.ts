@@ -35,7 +35,7 @@ export class Content {
 
   @Prop({
     type: String,
-    required: true,
+    // required: true,
     maxlength: [
       160,
       'Excerpt should be 150-160 characters for meta description',
