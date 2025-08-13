@@ -1,50 +1,59 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Dropdown, Space, message, Table } from "antd";
+import { Button, Dropdown, Space, message, Table, Tag } from "antd";
 import type { MenuProps, TableColumnsType } from "antd";
 import { ChevronDown, Eye, FilePenLine, Share2, Trash } from "lucide-react";
 import { TableRowSelection } from "antd/es/table/interface";
 
-interface DataType {
-  key: React.Key;
+interface PermissionSchema {
   name: string;
-  age: number;
-  address: string;
+  status: string;
+  slug: string;
 }
-const items: MenuProps["items"] = [
-  {
-    label: "View",
-    key: "1",
-    icon: <Eye />,
-  },
-  {
-    label: "Edit",
-    key: "2",
-    icon: <FilePenLine />,
-  },
-  {
-    label: "Share",
-    key: "3",
-    icon: <Share2 />,
-  },
-  {
-    label: "Delete",
-    key: "4",
-    icon: <Trash />,
-    danger: true,
-    // disabled: true,
-  },
-];
+
+interface DataType {
+  name: string;
+  email: string;
+  roles: string;
+  permission: PermissionSchema[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 const handleMenuClick: MenuProps["onClick"] = (e) => {
   message.info("Click on menu item.");
   console.log("click", e);
 };
 
-const menuProps = {
-  items,
-  onClick: handleMenuClick,
+const getMenuItems = (permissions: PermissionSchema[]) => {
+  return [
+    {
+      label: "View",
+      key: "1",
+      icon: <Eye />,
+      disabled: !permissions.some((p) => p.name == "view"),
+    },
+    {
+      label: "Edit",
+      key: "2",
+      icon: <FilePenLine />,
+      disabled: !permissions.some((p) => p.name == "edit"),
+    },
+    {
+      label: "Share",
+      key: "3",
+      icon: <Share2 />,
+      disabled: !permissions.some((p) => p.name == "share"),
+    },
+    {
+      label: "Delete",
+      key: "4",
+      icon: <Trash />,
+      danger: true,
+      disabled: !permissions.some((p) => p.name == "delete"),
+    },
+  ];
 };
-
 const columns: TableColumnsType<DataType> = [
   {
     title: "Name",
@@ -52,25 +61,252 @@ const columns: TableColumnsType<DataType> = [
   },
   {
     title: "E-mail",
-    dataIndex: "age",
+    dataIndex: "email",
   },
   {
     title: "Roles",
-    dataIndex: "address",
+    dataIndex: "roles",
   },
   {
     title: "Permission",
     dataIndex: "permission",
+    render(value, record) {
+      return (
+        <>
+          {record.permission.map((permission) => {
+            return <Tag key={permission.slug}>{permission.name}</Tag>;
+          })}
+        </>
+      );
+    },
   },
 ];
 
-const dataSource = Array.from({ length: 46 }).map<DataType>((_, i) => ({
-  key: i,
-  name: `Edward King ${i}`,
-  age: 32,
-  address: `London, Park Lane no. ${i}`,
-}));
-
+const dataSource = [
+  {
+    name: "Alice Johnson",
+    email: "alice@example.com",
+    roles: "admin",
+    permission: [
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "view", status: "active", slug: "/view" },
+      { name: "delete", status: "active", slug: "/delete" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T10:00:00.000Z",
+    updatedAt: "2025-08-13T10:00:00.000Z",
+  },
+  {
+    name: "Bob Smith",
+    email: "bob@example.com",
+    roles: "manager",
+    permission: [
+      { name: "view", status: "active", slug: "/view" },
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T10:05:00.000Z",
+    updatedAt: "2025-08-13T10:05:00.000Z",
+  },
+  {
+    name: "Charlie Brown",
+    email: "charlie@example.com",
+    roles: "user",
+    permission: [{ name: "view", status: "active", slug: "/view" }],
+    createdAt: "2025-08-13T10:10:00.000Z",
+    updatedAt: "2025-08-13T10:10:00.000Z",
+  },
+  {
+    name: "Diana Prince",
+    email: "diana@example.com",
+    roles: "admin",
+    permission: [
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "view", status: "active", slug: "/view" },
+      { name: "delete", status: "active", slug: "/delete" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T10:15:00.000Z",
+    updatedAt: "2025-08-13T10:15:00.000Z",
+  },
+  {
+    name: "Eve Adams",
+    email: "eve@example.com",
+    roles: "manager",
+    permission: [
+      { name: "view", status: "active", slug: "/view" },
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T10:20:00.000Z",
+    updatedAt: "2025-08-13T10:20:00.000Z",
+  },
+  {
+    name: "Frank Miller",
+    email: "frank@example.com",
+    roles: "user",
+    permission: [{ name: "view", status: "active", slug: "/view" }],
+    createdAt: "2025-08-13T10:25:00.000Z",
+    updatedAt: "2025-08-13T10:25:00.000Z",
+  },
+  {
+    name: "Grace Lee",
+    email: "grace@example.com",
+    roles: "admin",
+    permission: [
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "view", status: "active", slug: "/view" },
+      { name: "delete", status: "active", slug: "/delete" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T10:30:00.000Z",
+    updatedAt: "2025-08-13T10:30:00.000Z",
+  },
+  {
+    name: "Henry Ford",
+    email: "henry@example.com",
+    roles: "manager",
+    permission: [
+      { name: "view", status: "active", slug: "/view" },
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T10:35:00.000Z",
+    updatedAt: "2025-08-13T10:35:00.000Z",
+  },
+  {
+    name: "Ivy Parker",
+    email: "ivy@example.com",
+    roles: "user",
+    permission: [{ name: "view", status: "active", slug: "/view" }],
+    createdAt: "2025-08-13T10:40:00.000Z",
+    updatedAt: "2025-08-13T10:40:00.000Z",
+  },
+  {
+    name: "Jack Black",
+    email: "jack@example.com",
+    roles: "admin",
+    permission: [
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "view", status: "active", slug: "/view" },
+      { name: "delete", status: "active", slug: "/delete" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T10:45:00.000Z",
+    updatedAt: "2025-08-13T10:45:00.000Z",
+  },
+  {
+    name: "Karen White",
+    email: "karen@example.com",
+    roles: "manager",
+    permission: [
+      { name: "view", status: "active", slug: "/view" },
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T10:50:00.000Z",
+    updatedAt: "2025-08-13T10:50:00.000Z",
+  },
+  {
+    name: "Liam Nelson",
+    email: "liam@example.com",
+    roles: "user",
+    permission: [{ name: "view", status: "active", slug: "/view" }],
+    createdAt: "2025-08-13T10:55:00.000Z",
+    updatedAt: "2025-08-13T10:55:00.000Z",
+  },
+  {
+    name: "Mia Wong",
+    email: "mia@example.com",
+    roles: "admin",
+    permission: [
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "view", status: "active", slug: "/view" },
+      { name: "delete", status: "active", slug: "/delete" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T11:00:00.000Z",
+    updatedAt: "2025-08-13T11:00:00.000Z",
+  },
+  {
+    name: "Noah Davis",
+    email: "noah@example.com",
+    roles: "manager",
+    permission: [
+      { name: "view", status: "active", slug: "/view" },
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T11:05:00.000Z",
+    updatedAt: "2025-08-13T11:05:00.000Z",
+  },
+  {
+    name: "Olivia Green",
+    email: "olivia@example.com",
+    roles: "user",
+    permission: [{ name: "view", status: "active", slug: "/view" }],
+    createdAt: "2025-08-13T11:10:00.000Z",
+    updatedAt: "2025-08-13T11:10:00.000Z",
+  },
+  {
+    name: "Paul Harris",
+    email: "paul@example.com",
+    roles: "admin",
+    permission: [
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "view", status: "active", slug: "/view" },
+      { name: "delete", status: "active", slug: "/delete" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T11:15:00.000Z",
+    updatedAt: "2025-08-13T11:15:00.000Z",
+  },
+  {
+    name: "Quinn Taylor",
+    email: "quinn@example.com",
+    roles: "manager",
+    permission: [
+      { name: "view", status: "active", slug: "/view" },
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T11:20:00.000Z",
+    updatedAt: "2025-08-13T11:20:00.000Z",
+  },
+  {
+    name: "Rachel Scott",
+    email: "rachel@example.com",
+    roles: "user",
+    permission: [{ name: "view", status: "active", slug: "/view" }],
+    createdAt: "2025-08-13T11:25:00.000Z",
+    updatedAt: "2025-08-13T11:25:00.000Z",
+  },
+  {
+    name: "Samuel King",
+    email: "samuel@example.com",
+    roles: "admin",
+    permission: [
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "view", status: "active", slug: "/view" },
+      { name: "delete", status: "active", slug: "/delete" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T11:30:00.000Z",
+    updatedAt: "2025-08-13T11:30:00.000Z",
+  },
+  {
+    name: "Tina Brooks",
+    email: "tina@example.com",
+    roles: "manager",
+    permission: [
+      { name: "view", status: "active", slug: "/view" },
+      { name: "edit", status: "active", slug: "/edit" },
+      { name: "share", status: "active", slug: "/share" },
+    ],
+    createdAt: "2025-08-13T11:35:00.000Z",
+    updatedAt: "2025-08-13T11:35:00.000Z",
+  },
+];
 const UserTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -119,15 +355,22 @@ const UserTable = () => {
 
   return (
     <Table
+      size="small"
       rowSelection={rowSelection}
+      rowKey={"email"}
       columns={[
         ...columns,
         {
           title: "Actions",
           key: "actions",
-          render() {
+          render(value, record) {
             return (
-              <Dropdown menu={menuProps}>
+              <Dropdown
+                menu={{
+                  items: getMenuItems(record.permission),
+                  onClick: handleMenuClick,
+                }}
+              >
                 <Button>
                   <Space>
                     Actions

@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Admin User",
+    "email": "admin@test.com",
+    "password": "Admin@123",
+    "roles": "admin"
+  },
+  {
+    "name": "Manager User",
+    "email": "manager@test.com",
+    "password": "Manager@123",
+    "roles": "manager"
+  },
+  {
+    "name": "Regular User",
+    "email": "user@test.com",
+    "password": "User@123",
+    "roles": "user"
+  },
+  {
+    "name": "John Doe",
+    "email": "john.doe@test.com",
+    "password": "John@123",
+    "roles": "user"
+  },
+  {
+    "name": "Jane Smith",
+    "email": "jane.smith@test.com",
+    "password": "Jane@123",
+    "roles": "manager"
+  },
+  {
+    "name": "Alex Johnson",
+    "email": "alex.j@test.com",
+    "password": "Alex@123",
+    "roles": "admin"
+  },
+  {
+    "name": "Sarah Williams",
+    "email": "sarah.w@test.com",
+    "password": "Sarah@123",
+    "roles": "user"
+  },
+  {
+    "name": "Mike Brown",
+    "email": "mike.b@test.com",
+    "password": "Mike@123",
+    "roles": "manager"
+  },
+  {
+    "name": "Emily Davis",
+    "email": "emily.d@test.com",
+    "password": "Emily@123",
+    "roles": "user"
+  },
+  {
+    "name": "David Wilson",
+    "email": "david.w@test.com",
+    "password": "David@123",
+    "roles": "admin"
+  },
+  {
+    "name": "Laura Martinez",
+    "email": "laura.m@test.com",
+    "password": "Laura@123",
+    "roles": "user"
+  },
+  {
+    "name": "Kevin Taylor",
+    "email": "kevin.t@test.com",
+    "password": "Kevin@123",
+    "roles": "manager"
+  },
+  {
+    "name": "Nina Adams",
+    "email": "nina.a@test.com",
+    "password": "Nina@123",
+    "roles": "user"
+  },
+  {
+    "name": "Tom Clark",
+    "email": "tom.c@test.com",
+    "password": "Tom@123",
+    "roles": "admin"
+  },
+  {
+    "name": "Olivia Lee",
+    "email": "olivia.l@test.com",
+    "password": "Olivia@123",
+    "roles": "user"
+  },
+  {
+    "name": "Ryan Garcia",
+    "email": "ryan.g@test.com",
+    "password": "Ryan@123",
+    "roles": "manager"
+  },
+  {
+    "name": "Sophia Lopez",
+    "email": "sophia.l@test.com",
+    "password": "Sophia@123",
+    "roles": "user"
+  },
+  {
+    "name": "Daniel King",
+    "email": "daniel.k@test.com",
+    "password": "Daniel@123",
+    "roles": "admin"
+  },
+  {
+    "name": "Emma Scott",
+    "email": "emma.s@test.com",
+    "password": "Emma@123",
+    "roles": "user"
+  },
+  {
+    "name": "Luke Perez",
+    "email": "luke.p@test.com",
+    "password": "Luke@123",
+    "roles": "manager"
+  }
+]
