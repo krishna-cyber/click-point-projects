@@ -16,9 +16,12 @@ export class CategoryService {
     return await this.categoryModel.find({});
   }
 
+  async findOne(id) {
+    return await this.categoryModel.findById(id);
+  }
+
   async createCategory(createCategoryDTO: CreateCategoryDTO) {
     try {
-      console.log(createCategoryDTO);
       const category = new this.categoryModel(createCategoryDTO);
       return await category.save();
     } catch (error) {

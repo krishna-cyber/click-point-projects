@@ -1,7 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDTO } from './dto/create-category.dto';
 import { ParamCheckDTO } from './dto/params.dto';
+import { Types } from 'mongoose';
 
 @Controller('category')
 export class CategoryController {
@@ -9,6 +18,14 @@ export class CategoryController {
   @Get()
   getCategory() {
     return this.categoryService.getCategory();
+  }
+
+  @Get(':id')
+  getCategoryById(@Param('id') id: string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid category id');
+    }
+    return this.categoryService.findOne(id);
   }
 
   @Post()
