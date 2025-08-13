@@ -30,12 +30,7 @@ export class UsersController {
       throw new BadRequestException('Invalid user id');
     }
 
-    try {
-      console.log(`${changeUserRoledto.role}, ${userId}`);
-      return this.userService.changeRole(userId, changeUserRoledto.role);
-    } catch (error) {
-      console.log(error);
-    }
+    return this.userService.changeRole(userId, changeUserRoledto.role);
   }
 
   @Get()

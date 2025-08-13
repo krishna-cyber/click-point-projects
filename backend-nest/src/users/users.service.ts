@@ -43,31 +43,35 @@ export class UsersService {
   }
 
   async changeRole(userId: string, role: string) {
-    let permission: Permissions[] = [];
+    try {
+      let permission: Permissions[] = [];
 
-    if (role === 'admin') {
-      permission = [
-        { name: 'edit', status: 'active', slug: '/edit' },
-        { name: 'view', status: 'active', slug: '/view' },
-        { name: 'delete', status: 'active', slug: '/delete' },
-        { name: 'share', status: 'active', slug: '/share' },
-      ];
-    } else if (role === 'manager') {
-      permission = [
-        { name: 'view', status: 'active', slug: '/view' },
-        { name: 'edit', status: 'active', slug: '/edit' },
-        { name: 'share', status: 'active', slug: '/share' },
-      ];
-    } else if (role === 'user') {
-      permission = [{ name: 'view', status: 'active', slug: '/view' }];
+      if (role === 'admin') {
+        permission = [
+          { name: 'edit', status: 'active', slug: '/edit' },
+          { name: 'view', status: 'active', slug: '/view' },
+          { name: 'delete', status: 'active', slug: '/delete' },
+          { name: 'share', status: 'active', slug: '/share' },
+        ];
+      } else if (role === 'manager') {
+        permission = [
+          { name: 'view', status: 'active', slug: '/view' },
+          { name: 'edit', status: 'active', slug: '/edit' },
+          { name: 'share', status: 'active', slug: '/share' },
+        ];
+      } else if (role === 'user') {
+        permission = [{ name: 'view', status: 'active', slug: '/view' }];
+      }
+      return await this.userModel.findByIdAndUpdate(
+        userId,
+        {
+          roles: role,
+          permission,
+        },
+        { new: true },
+      );
+    } catch (error) {
+      throw new HttpException(error?.message, HttpStatus.BAD_REQUEST);
     }
-    return await this.userModel.findByIdAndUpdate(
-      userId,
-      {
-        roles: role,
-        permission,
-      },
-      { new: true },
-    );
   }
 }
