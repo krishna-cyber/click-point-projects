@@ -1,9 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Dropdown, Space, message, Table } from "antd";
+import { useQuery } from "@tanstack/react-query";
+import { Button, Dropdown, Space, message, Table, Tag } from "antd";
 import type { MenuProps, TableColumnsType } from "antd";
 import { ChevronDown, Eye, FilePenLine, Share2, Trash } from "lucide-react";
 import { TableRowSelection } from "antd/es/table/interface";
+import { getCategories } from "../../../../lib/http/api";
 
 interface DataType {
   key: React.Key;
@@ -53,6 +55,13 @@ const columns: TableColumnsType<DataType> = [
   {
     title: "Status",
     dataIndex: "status",
+    render(value) {
+      return value == "active" ? (
+        <Tag color="#2db7f5">{value}</Tag>
+      ) : (
+        <Tag color="#f50">{value}</Tag>
+      );
+    },
   },
   {
     title: "Slug",
@@ -60,15 +69,15 @@ const columns: TableColumnsType<DataType> = [
   },
 ];
 
-const dataSource = Array.from({ length: 46 }).map<DataType>((_, i) => ({
-  key: i,
-  name: `Edward King ${i}`,
-  age: 32,
-  address: `London, Park Lane no. ${i}`,
-}));
-
 const CategoryTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+  });
+
+  console.log(data?.data);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
@@ -115,6 +124,8 @@ const CategoryTable = () => {
 
   return (
     <Table
+      loading={isLoading}
+      size="small"
       rowSelection={rowSelection}
       columns={[
         ...columns,
@@ -135,7 +146,7 @@ const CategoryTable = () => {
           },
         },
       ]}
-      dataSource={dataSource}
+      dataSource={data?.data}
     />
   );
 };

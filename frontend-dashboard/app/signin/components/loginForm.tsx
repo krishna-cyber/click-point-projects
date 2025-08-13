@@ -1,5 +1,5 @@
 "use client";
-import { login } from "@/lib/actions/login";
+import { login } from "../../../lib/actions/login";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useActionState } from "react";
@@ -18,10 +18,14 @@ const LoginForm = () => {
     window.location.href = redirect ?? "/";
   }
 
-  console.log(state);
   return (
     <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
       <h1 className="text-2xl font-semibold mb-4">Login</h1>
+      {state.type == "error" ? (
+        <p className=" text-red-400 text-2xl font-semibold">{state.message}</p>
+      ) : (
+        <p className=" text-green-400 text-2xl">{state.message}</p>
+      )}
       <form action={formAction} method="POST">
         <div className="mb-4">
           <label htmlFor="username" className="block text-gray-600">

@@ -42,6 +42,10 @@ export class UsersService {
     return await this.userModel.find();
   }
 
+  async deleteOne(id: string) {
+    return await this.userModel.findByIdAndDelete(id);
+  }
+
   async changeRole(userId: string, role: string) {
     try {
       let permission: Permissions[] = [];

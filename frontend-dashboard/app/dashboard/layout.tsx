@@ -41,7 +41,7 @@ const LayoutPage: React.FC<LayoutPageProps> = ({ children }) => {
 
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
   return (
     <Layout
@@ -50,7 +50,21 @@ const LayoutPage: React.FC<LayoutPageProps> = ({ children }) => {
         width: "100vw",
       }}
     >
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider
+        style={{
+          overflow: "auto",
+          height: "100vh",
+          position: "sticky",
+          insetInlineStart: 0,
+          top: 0,
+          bottom: 0,
+          scrollbarWidth: "thin",
+          scrollbarGutter: "stable",
+        }}
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+      >
         <div className="demo-logo-vertical text-white">Logo section</div>
         <Menu
           theme="dark"
@@ -116,15 +130,7 @@ const LayoutPage: React.FC<LayoutPageProps> = ({ children }) => {
             <Avatar size={"default"} icon={<User />} />
           </nav>
         </Header>
-        <Content
-          style={{
-            margin: "24px 16px",
-            padding: 24,
-            minHeight: 280,
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
-          }}
-        >
+        <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
           {children}
         </Content>
       </Layout>

@@ -115,6 +115,9 @@ const ContentTable = () => {
 
   return (
     <Table
+      rowKey={"_id"}
+      style={{ overflow: "hidden" }}
+      size="small"
       rowSelection={rowSelection}
       bordered
       pagination={{

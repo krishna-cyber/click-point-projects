@@ -20,6 +20,13 @@ export class Category {
   slug: string;
 
   @Prop({
+    type: [String],
+    required: true,
+    default: ['create', 'view', 'edit', 'delete'],
+  })
+  permissions: string[];
+
+  @Prop({
     type: String,
     enum: {
       values: ['active', 'inactive'],
