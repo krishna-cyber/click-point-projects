@@ -2,6 +2,7 @@
 import * as cookie from "cookie";
 import { cookies } from "next/headers";
 import axios from "axios";
+import { signIn } from "../../auth";
 
 interface PreviousState {
   // Define the structure of previousState here
@@ -13,18 +14,9 @@ export async function login(previousState: PreviousState, formData: FormData) {
   const password = formData.get("password");
 
   try {
-    const response = await axios.post(
-      `${process.env.API_URL}/auth/login`,
-      {
-        email,
-        password,
-      },
-      {
-        withCredentials: true, // This allows cookies to be sent/received
-      }
-    );
+    const response = await signIn("credentials", { email, password });
 
-    console.log(response.data);
+    console.log(response);
 
     const setCookieHeaders = response.headers["set-cookie"];
 

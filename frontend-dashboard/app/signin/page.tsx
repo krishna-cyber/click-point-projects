@@ -1,8 +1,16 @@
+import { redirect } from "next/navigation";
 import Image from "next/image";
 import React from "react";
 import LoginForm from "./components/loginForm";
 
-const page = () => {
+const LoginPage = () => {
+  // Simulate checking if user is already logged in
+  const isAuthenticated = false; // Replace with real auth check
+
+  if (isAuthenticated) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="bg-gray-100 flex justify-center items-center h-screen">
       <div className="w-1/2 h-screen hidden lg:block">
@@ -20,4 +28,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default LoginPage;

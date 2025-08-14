@@ -5,7 +5,6 @@ import { User } from './users.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUsersDTO } from './dto/create-users.dto';
-import { Role } from 'src/role/role.schema';
 import { Permission } from 'src/permission/permission.schema';
 
 interface Permissions {
@@ -57,7 +56,7 @@ export class UsersService {
     return (await this.userModel.deleteOne({ _id })).acknowledged;
   }
 
-  async changeRole(userId: string, roles: Role[]) {
+  async changeRole(userId: string, roles: string[]) {
     try {
       return await this.userModel.findByIdAndUpdate(
         userId,
