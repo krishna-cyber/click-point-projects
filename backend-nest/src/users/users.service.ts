@@ -5,6 +5,8 @@ import { User } from './users.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUsersDTO } from './dto/create-users.dto';
+import { Role } from 'src/role/role.schema';
+import { Permission } from 'src/permission/permission.schema';
 
 interface Permissions {
   name: string;
@@ -22,7 +24,6 @@ export class UsersService {
   ): Promise<User | Error | undefined> {
     try {
       const createdUser = new this.userModel(createUserDto);
-      console.log(createUserDto);
       return await createdUser.save();
     } catch (error) {
       if (error?.name === 'ValidationError' && error?.errors) {
@@ -38,39 +39,30 @@ export class UsersService {
     return user;
   }
 
+  async findById(id: string) {
+    return await this.userModel.findById(id).populate({
+      path: 'roles',
+      populate: {
+        path: 'permissions',
+        model: Permission.name,
+      },
+    });
+  }
+
   async getUsers() {
     return await this.userModel.find();
   }
 
-  async deleteOne(id: string) {
-    return await this.userModel.findByIdAndDelete(id);
+  async deleteOne(_id: string) {
+    return (await this.userModel.deleteOne({ _id })).acknowledged;
   }
 
-  async changeRole(userId: string, role: string) {
+  async changeRole(userId: string, roles: Role[]) {
     try {
-      let permission: Permissions[] = [];
-
-      if (role === 'admin') {
-        permission = [
-          { name: 'edit', status: 'active', slug: '/edit' },
-          { name: 'view', status: 'active', slug: '/view' },
-          { name: 'delete', status: 'active', slug: '/delete' },
-          { name: 'share', status: 'active', slug: '/share' },
-        ];
-      } else if (role === 'manager') {
-        permission = [
-          { name: 'view', status: 'active', slug: '/view' },
-          { name: 'edit', status: 'active', slug: '/edit' },
-          { name: 'share', status: 'active', slug: '/share' },
-        ];
-      } else if (role === 'user') {
-        permission = [{ name: 'view', status: 'active', slug: '/view' }];
-      }
       return await this.userModel.findByIdAndUpdate(
         userId,
         {
-          roles: role,
-          permission,
+          roles,
         },
         { new: true },
       );

@@ -1,9 +1,14 @@
 import {
+  ArrayNotEmpty,
+  ArrayUnique,
+  IsArray,
   IsEmail,
+  IsMongoId,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
 } from 'class-validator';
+import { Role } from 'src/role/role.schema';
 
 export class CreateUsersDTO {
   @IsString()
@@ -18,9 +23,11 @@ export class CreateUsersDTO {
   @IsNotEmpty()
   readonly password: string;
 
+  @IsArray()
+  @ArrayUnique()
+  @ArrayNotEmpty({ message: 'User must be assigned with some role' })
+  @IsMongoId({ each: true })
+  readonly roles: Role[];
+
   readonly status: string;
-
-  readonly roles: string;
-
-  readonly permission: { name: string; status: string; slug: string };
 }

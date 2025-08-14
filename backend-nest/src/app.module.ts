@@ -8,13 +8,15 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ContentsModule } from './contents/contents.module';
+import { PermissionModule } from './permission/permission.module';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URI!),
+    MongooseModule.forRoot(process.env.MONGODB_URI!, { autoIndex: true }),
     DevtoolsModule.register({
       http: process.env.NODE_ENV !== 'production',
     }),
@@ -22,6 +24,8 @@ import { ContentsModule } from './contents/contents.module';
     CategoryModule,
     AuthModule,
     ContentsModule,
+    PermissionModule,
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

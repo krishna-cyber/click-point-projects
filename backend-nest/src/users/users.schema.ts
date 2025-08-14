@@ -1,38 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Role } from 'src/role/role.schema';
+import mongoose, { HydratedDocument } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export type UserDocument = HydratedDocument<User>;
-
-@Schema({ _id: false, timestamps: true })
-export class PermissionSchema {
-  @Prop({
-    type: String,
-    required: true,
-    enum: {
-      values: ['create', 'read', 'update', 'edit', 'delete', 'view', 'share'],
-      message: `{VALUE} is not valid permission`,
-    },
-  })
-  name: string;
-
-  @Prop({
-    type: String,
-    lowercase: true,
-    default: 'active',
-    enum: {
-      values: ['active', 'inactive', 'pending'],
-      message: '{VALUE} is not valid status.',
-    },
-  })
-  status: string;
-
-  @Prop({
-    lowercase: true,
-    required: true,
-  })
-  slug: string;
-}
 
 @Schema({ timestamps: true })
 export class User {
@@ -62,45 +33,34 @@ export class User {
   password: string;
 
   @Prop({
-    type: String,
-    required: true,
-    lowercase: true,
-    enum: {
-      values: ['user', 'admin', 'manager'],
-      message: '{VALUE} is not valid roles.',
-    },
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: Role.name,
   })
-  roles: string;
-
-  @Prop({
-    type: [PermissionSchema],
-    default: [],
-  })
-  permission: PermissionSchema[];
+  roles: Role[];
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
 
-UserSchema.pre('save', function (next) {
-  if (this.roles === 'admin') {
-    this.permission.push(
-      { name: 'edit', status: 'active', slug: '/edit' },
-      { name: 'view', status: 'active', slug: '/view' },
-      { name: 'delete', status: 'active', slug: '/delete' },
-      { name: 'share', status: 'active', slug: '/share' },
-    );
-  } else if (this.roles === 'manager') {
-    this.permission.push(
-      { name: 'view', status: 'active', slug: '/view' },
-      { name: 'edit', status: 'active', slug: '/edit' },
-      { name: 'share', status: 'active', slug: '/share' },
-    );
-  } else if (this.roles === 'user') {
-    this.permission.push({ name: 'view', status: 'active', slug: '/view' });
-  }
+// UserSchema.pre('save', function (next) {
+//   if (this.roles === 'admin') {
+//     this.permission.push(
+//       { name: 'edit', status: 'active', slug: '/edit' },
+//       { name: 'view', status: 'active', slug: '/view' },
+//       { name: 'delete', status: 'active', slug: '/delete' },
+//       { name: 'share', status: 'active', slug: '/share' },
+//     );
+//   } else if (this.roles === 'manager') {
+//     this.permission.push(
+//       { name: 'view', status: 'active', slug: '/view' },
+//       { name: 'edit', status: 'active', slug: '/edit' },
+//       { name: 'share', status: 'active', slug: '/share' },
+//     );
+//   } else if (this.roles === 'user') {
+//     this.permission.push({ name: 'view', status: 'active', slug: '/view' });
+//   }
 
-  next();
-});
+//   next();
+// });
 
 UserSchema.pre('save', async function (next) {
   try {
