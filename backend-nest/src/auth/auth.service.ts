@@ -15,14 +15,25 @@ export class AuthService {
 
   async signIn(loginCredentials: LoginAuthDTO) {
     const user = await this.userService.findOne(loginCredentials.email);
+    console.log(user);
+    if (!user) {
+      throw new UnauthorizedException('Credentials do not match');
+    }
 
-    const isPasswordMatch = await bcrypt.compare(
+    console.log('credential check');
+    console.log(loginCredentials.password, user?.password);
+
+    const isPasswordMatch = bcrypt.compareSync(
       loginCredentials.password,
-      user?.password as string,
+      user?.password,
     );
 
+    console.log(isPasswordMatch);
+
     if (!isPasswordMatch) {
-      throw new UnauthorizedException('Credentials do not match');
+      throw new UnauthorizedException('Credentials do not match', {
+        cause: loginCredentials.email,
+      });
     }
 
     const payload = {

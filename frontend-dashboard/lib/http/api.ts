@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
   headers: {
@@ -9,13 +9,13 @@ const api = axios.create({
   },
 });
 
-// const refreshToken = async () => {
-//   return axios.post(
-//     `${process.env.NEXT_PUBLIC_API_URL}/api/auth/auth/refresh`,
-//     {},
-//     { withCredentials: true }
-//   );
-// };
+export const refreshToken = async () => {
+  return axios.post(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/auth/refresh`,
+    {},
+    { withCredentials: true }
+  );
+};
 
 //response interceptor to refresh token on receiving token expired error
 

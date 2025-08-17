@@ -1,5 +1,5 @@
 "use client";
-import { login } from "../../../lib/actions/login";
+import { login } from "../../../lib/actions/login-action";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useActionState } from "react";

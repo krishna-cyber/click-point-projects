@@ -23,7 +23,6 @@ export class AuthController {
     try {
       const { access_token, refresh_token } =
         await this.authService.signIn(loginCredentials);
-
       response.cookie('accessToken', access_token, {
         httpOnly: true,
         secure: true,

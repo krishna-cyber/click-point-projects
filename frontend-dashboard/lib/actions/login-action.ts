@@ -2,7 +2,7 @@
 import * as cookie from "cookie";
 import { cookies } from "next/headers";
 import axios from "axios";
-import { signIn } from "../../auth";
+import { api } from "../http/api";
 
 interface PreviousState {
   // Define the structure of previousState here
@@ -13,9 +13,18 @@ export async function login(previousState: PreviousState, formData: FormData) {
   const email = formData.get("email");
   const password = formData.get("password");
 
-  try {
-    const response = await signIn("credentials", { email, password });
+  if (!email || !password) {
+    return {
+      type: "error",
+      message: "Email and passwords are required",
+    };
+  }
 
+  try {
+    const response = await api.post("/auth/login", {
+      email,
+      password,
+    });
     console.log(response);
 
     const setCookieHeaders = response.headers["set-cookie"];
