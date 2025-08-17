@@ -15,20 +15,14 @@ export class AuthService {
 
   async signIn(loginCredentials: LoginAuthDTO) {
     const user = await this.userService.findOne(loginCredentials.email);
-    console.log(user);
     if (!user) {
       throw new UnauthorizedException('Credentials do not match');
     }
 
-    console.log('credential check');
-    console.log(loginCredentials.password, user?.password);
-
-    const isPasswordMatch = bcrypt.compareSync(
+    const isPasswordMatch = await bcrypt.compare(
       loginCredentials.password,
       user?.password,
     );
-
-    console.log(isPasswordMatch);
 
     if (!isPasswordMatch) {
       throw new UnauthorizedException('Credentials do not match', {
@@ -47,6 +41,7 @@ export class AuthService {
       refresh_token: await this.jwtService.signAsync(payload, {
         secret: this.configService.get<string>('JWT_REFRESHTOKEN_SECRET'),
       }),
+      user,
     };
   }
 

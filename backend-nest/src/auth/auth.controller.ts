@@ -21,7 +21,7 @@ export class AuthController {
     @Res({ passthrough: true }) response: express.Response,
   ) {
     try {
-      const { access_token, refresh_token } =
+      const { access_token, refresh_token, user } =
         await this.authService.signIn(loginCredentials);
       response.cookie('accessToken', access_token, {
         httpOnly: true,
@@ -39,6 +39,12 @@ export class AuthController {
 
       response.json({
         message: 'login successful',
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          roles: user.roles,
+        },
       });
     } catch (error) {
       console.error('Login error:', error);

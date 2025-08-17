@@ -75,6 +75,7 @@ export async function login(previousState: PreviousState, formData: FormData) {
     return {
       type: "success",
       message: "login successful",
+      user: response.data?.user,
     };
   } catch (error: unknown) {
     console.log(error);

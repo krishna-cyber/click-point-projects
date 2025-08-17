@@ -1,21 +1,27 @@
 "use client";
 import { login } from "../../../lib/actions/login-action";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import React, { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useActionState, useContext } from "react";
+import { UserContext, UserContextType } from "../../../lib/context/userContext";
 
 const LoginForm = () => {
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirectTo")?.toString();
+  const { saveUser } = useContext(UserContext) as UserContextType;
+  const router = useRouter();
+
+  // const searchParams = useSearchParams();
+  // const redirect = searchParams.get("redirectTo")?.toString();
 
   const initialState = {
     type: "",
     message: "",
+    user: null,
   };
   const [state, formAction, isPending] = useActionState(login, initialState);
 
   if (state.type == "success") {
-    window.location.href = redirect ?? "/";
+    saveUser(state.user);
+    router.push("/dashboard");
   }
 
   return (

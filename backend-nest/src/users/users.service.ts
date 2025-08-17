@@ -34,7 +34,16 @@ export class UsersService {
   }
 
   async findOne(email: string) {
-    const user = await this.userModel.findOne({ email }).select('+password');
+    const user = await this.userModel
+      .findOne({ email })
+      .select('+password')
+      .populate({
+        path: 'roles',
+        populate: {
+          path: 'permissions',
+          model: Permission.name,
+        },
+      });
     return user;
   }
 

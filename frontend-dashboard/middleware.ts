@@ -5,7 +5,6 @@ export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/dashboard")) {
     const access_token = cookieStore.get("accessToken");
     const refresh_token = cookieStore.get("refreshToken");
-    console.log(access_token, refresh_token);
     if (!access_token || !refresh_token) {
       return NextResponse.rewrite(new URL("/forbidden", request.url));
     }

@@ -1,7 +1,10 @@
 "use client";
-import { Button, Layout, Menu, theme, Avatar } from "antd";
+import { Button, Image, Layout, Menu, theme, Avatar } from "antd";
 
-import React, { useState, useMemo } from "react";
+// To use a local logo place an image file (e.g. cms-logo.png) inside the project root /public folder (create if missing)
+// then reference it as src="/cms-logo.png". Avoid spaces in filenames.
+
+import React, { useState, useMemo, useContext } from "react";
 import {
   Blocks,
   LayoutDashboard,
@@ -12,6 +15,7 @@ import {
   Users,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
+import { UserContext, UserContextType } from "../../lib/context/userContext";
 const { Header, Sider, Content } = Layout;
 
 interface LayoutPageProps {
@@ -20,7 +24,9 @@ interface LayoutPageProps {
 
 const LayoutPage: React.FC<LayoutPageProps> = ({ children }) => {
   const router = useRouter();
+  const { user } = useContext(UserContext) as UserContextType;
   const pathname = usePathname();
+  console.log(user);
 
   const selectedKey = useMemo(() => {
     if (pathname === "/dashboard/users") {
@@ -65,7 +71,16 @@ const LayoutPage: React.FC<LayoutPageProps> = ({ children }) => {
         collapsible
         collapsed={collapsed}
       >
-        <div className="demo-logo-vertical text-white">Logo section</div>
+        <div className="w-full flex justify-center items-center text-white py-4">
+          <Image
+            preview={false}
+            className="dark:invert"
+            src="/logo.png"
+            alt="Next.js logo"
+            width={50}
+            height={50}
+          />
+        </div>
         <Menu
           theme="dark"
           mode="inline"
