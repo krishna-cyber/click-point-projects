@@ -33,6 +33,29 @@ export class UsersService {
     }
   }
 
+  async findPermissions(id: string, name: string) {
+    const user = await this.userModel.findById(id).populate({
+      path: 'roles',
+      populate: {
+        path: 'permissions',
+        model: Permission.name,
+      },
+    });
+
+    console.log(name);
+    const roles = user?.roles.map((role) => role.permissions);
+    if (roles) {
+      // You can process filtered permissions here if needed, e.g.:
+      const filteredPermissions = roles[0]
+        .filter((perm) => perm.name == name)
+        .map((perm) => perm.action);
+      console.log(`permissions after filter,`, filteredPermissions);
+      return filteredPermissions;
+    } else {
+      return [];
+    }
+  }
+
   async findOne(email: string) {
     const user = await this.userModel
       .findOne({ email })
@@ -58,7 +81,13 @@ export class UsersService {
   }
 
   async getUsers() {
-    return await this.userModel.find();
+    return await this.userModel.find().populate({
+      path: 'roles',
+      populate: {
+        path: 'permissions',
+        model: Permission.name,
+      },
+    });
   }
 
   async deleteOne(_id: string) {

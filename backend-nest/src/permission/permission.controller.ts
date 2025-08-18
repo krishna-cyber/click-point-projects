@@ -25,6 +25,10 @@ export class PermissionController {
     return this.permissionService.findAll();
   }
 
+  @Get('/list/:name')
+  findPermissions(@Param('name') name: string) {
+    return this.permissionService.findPermissionsByName(name);
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     if (!Types.ObjectId.isValid(id)) {

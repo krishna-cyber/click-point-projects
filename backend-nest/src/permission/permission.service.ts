@@ -27,6 +27,11 @@ export class PermissionService {
     }
   }
 
+  async findPermissionsByName(name: string) {
+    const permissions = await this.permissionModel.find({ name });
+    return permissions.map((permissions) => permissions.action);
+  }
+
   async findAll() {
     return await this.permissionModel.find();
   }

@@ -13,7 +13,6 @@ import { CreateUsersDTO } from './dto/create-users.dto';
 import { UsersService } from './users.service';
 import { UpdateUserRoledto } from './dto/change-user-role.dto';
 import { Types } from 'mongoose';
-// import express from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -29,6 +28,17 @@ export class UsersController {
       throw new BadRequestException('Invalid user id');
     }
     return this.userService.findById(id);
+  }
+
+  @Get(':id/permission/:name')
+  findPermissionsOfModule(
+    @Param('id') id: string,
+    @Param('name') name: string,
+  ) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid user id');
+    }
+    return this.userService.findPermissions(id, name);
   }
 
   @Post()
