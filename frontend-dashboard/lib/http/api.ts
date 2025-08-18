@@ -1,4 +1,6 @@
 import axios from "axios";
+import { PermissionType, RoleType, UserDataType } from "../../types/types";
+// import { UserDataType } from "../../app/dashboard/role/component/roleTable";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -45,3 +47,21 @@ api.interceptors.response.use(
 );
 
 export const getCategories = () => api.get(`category`);
+
+// Returns Promise<User[]> (data only)
+export const getUsers = async () => {
+  const res = await api.get("/users");
+  return res.data as UserDataType[];
+};
+
+export const getPermissionsOfUser = async () => {
+  const res = await api.get("/permission/list/user");
+  return res.data as string[];
+};
+
+export const getRoles = async () => {
+  const res = await api.get<RoleType[]>("/role");
+  return res.data;
+};
+// If you still need the full AxiosResponse with headers/status, you can expose:
+// export const getUsersResponse = () => api.get<User[]>("/users");

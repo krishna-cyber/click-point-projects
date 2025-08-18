@@ -7,11 +7,13 @@ import { Button, Image, Layout, Menu, theme, Avatar } from "antd";
 import React, { useState, useMemo, useContext } from "react";
 import {
   Blocks,
+  Key,
   LayoutDashboard,
   Menu as MenuIcon,
   MenuSquare,
   NotebookPen,
   User,
+  UserCog,
   Users,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
@@ -116,6 +118,22 @@ const LayoutPage: React.FC<LayoutPageProps> = ({ children }) => {
               label: "Contents",
               onClick: () => {
                 router.push("/dashboard/content");
+              },
+            },
+            {
+              key: "5",
+              icon: <Key />,
+              label: "Permissions",
+              onClick: () => {
+                router.push("/dashboard/permission");
+              },
+            },
+            {
+              key: "6",
+              icon: <UserCog />,
+              label: "Roles",
+              onClick: () => {
+                router.push("/dashboard/role");
               },
             },
           ]}

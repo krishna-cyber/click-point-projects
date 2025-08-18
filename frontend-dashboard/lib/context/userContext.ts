@@ -1,27 +1,10 @@
 "use client";
 import React, { createContext, useState, useContext } from "react";
-
-export interface Permission {
-  name: string;
-  action: string;
-}
-
-export interface Role {
-  name: string;
-  permissions: Permission[];
-}
-
-export interface User {
-  _id?: string;
-  name?: string;
-  title?: string;
-  description?: string;
-  status?: boolean;
-}
+import { UserDataType } from "../../types/types";
 
 export type UserContextType = {
-  user: User | null;
-  saveUser: (user: User) => void;
+  user: UserDataType | null;
+  saveUser: (user: UserDataType) => void;
   updateUser: (id: string) => void;
 };
 
@@ -30,9 +13,9 @@ export const UserContext = createContext<UserContextType | null>(null);
 const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserDataType | null>(null);
 
-  const saveUser = (newUser: User) => {
+  const saveUser = (newUser: UserDataType) => {
     setUser(newUser);
   };
 
