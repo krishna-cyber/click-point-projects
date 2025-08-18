@@ -1,32 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
-import type { CascaderProps } from "antd";
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Checkbox,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Select,
-  Typography,
-} from "antd";
+import React from "react";
+import { Button, Form, Input, Select, Typography } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { getRoles } from "../../../../lib/http/api";
 
 const { Title } = Typography;
 
 const { Option } = Select;
-
-interface DataNodeType {
-  value: string;
-  label: string;
-  children?: DataNodeType[];
-}
 
 const formItemLayout = {
   labelCol: {
@@ -62,18 +43,6 @@ const UserRegistrationForm: React.FC = () => {
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
-  };
-
-  const [autoCompleteResult, setAutoCompleteResult] = useState<string[]>([]);
-
-  const onWebsiteChange = (value: string) => {
-    if (!value) {
-      setAutoCompleteResult([]);
-    } else {
-      setAutoCompleteResult(
-        [".com", ".org", ".net"].map((domain) => `${value}${domain}`)
-      );
-    }
   };
 
   return (
@@ -158,22 +127,16 @@ const UserRegistrationForm: React.FC = () => {
         </Form.Item>
 
         <Form.Item
-          name="gender"
-          label="Gender"
-          rules={[{ required: true, message: "Please select gender!" }]}
-        >
-          <Select placeholder="select your gender">
-            <Option value="male">Male</Option>
-            <Option value="female">Female</Option>
-            <Option value="other">Other</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
           name="roles"
           label="Roles"
-          rules={[{ required: true, message: "Please select role!" }]}
+          rules={[
+            { required: true, message: "Please select role!" },
+            {
+              type: "array",
+            },
+          ]}
         >
-          <Select placeholder="Select role">
+          <Select mode="multiple" placeholder="Select role">
             {roles?.map((role) => {
               return (
                 <Option key={role._id} value={role._id}>
@@ -184,48 +147,6 @@ const UserRegistrationForm: React.FC = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item
-          label="Captcha"
-          extra="We must make sure that your are a human."
-        >
-          <Row gutter={8}>
-            <Col span={12}>
-              <Form.Item
-                name="captcha"
-                noStyle
-                rules={[
-                  {
-                    required: true,
-                    message: "Please input the captcha you got!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Button>Get captcha</Button>
-            </Col>
-          </Row>
-        </Form.Item>
-
-        <Form.Item
-          name="agreement"
-          valuePropName="checked"
-          rules={[
-            {
-              validator: (_, value) =>
-                value
-                  ? Promise.resolve()
-                  : Promise.reject(new Error("Should accept agreement")),
-            },
-          ]}
-          {...tailFormItemLayout}
-        >
-          <Checkbox>
-            I have read the <a href="">agreement</a>
-          </Checkbox>
-        </Form.Item>
         <Form.Item {...tailFormItemLayout}>
           <Button type="primary" htmlType="submit">
             Register
