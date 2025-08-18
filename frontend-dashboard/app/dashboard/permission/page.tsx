@@ -1,7 +1,8 @@
 import React from "react";
+import PermissionViewTable from "./PermissionViewTable";
 
 const page = () => {
-  return <div>page</div>;
+  return <PermissionViewTable />;
 };
 
 export default page;

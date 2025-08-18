@@ -3,9 +3,17 @@ import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Dropdown, Space, message, Table, Tag } from "antd";
 import type { MenuProps, TableColumnsType } from "antd";
-import { ChevronDown, Eye, FilePenLine, Share2, Trash } from "lucide-react";
+import {
+  ChevronDown,
+  Eye,
+  FilePenLine,
+  Plus,
+  Share2,
+  Trash,
+} from "lucide-react";
 import { TableRowSelection } from "antd/es/table/interface";
 import { getCategories } from "../../../../lib/http/api";
+import { useRouter } from "next/navigation";
 
 interface DataType {
   key: React.Key;
@@ -121,33 +129,47 @@ const CategoryTable = () => {
       },
     ],
   };
+  const router = useRouter();
 
   return (
-    <Table
-      loading={isLoading}
-      size="small"
-      rowSelection={rowSelection}
-      columns={[
-        ...columns,
-        {
-          title: "Actions",
-          key: "actions",
-          render() {
-            return (
-              <Dropdown menu={menuProps}>
-                <Button>
-                  <Space>
-                    Actions
-                    <ChevronDown />
-                  </Space>
-                </Button>
-              </Dropdown>
-            );
+    <>
+      <Button
+        type="primary"
+        className=" my-2"
+        onClick={() => {
+          router.push("/dashboard/category/create");
+        }}
+        icon={<Plus />}
+      >
+        Create new category
+      </Button>
+
+      <Table
+        loading={isLoading}
+        size="small"
+        rowSelection={rowSelection}
+        columns={[
+          ...columns,
+          {
+            title: "Actions",
+            key: "actions",
+            render() {
+              return (
+                <Dropdown menu={menuProps}>
+                  <Button>
+                    <Space>
+                      Actions
+                      <ChevronDown />
+                    </Space>
+                  </Button>
+                </Dropdown>
+              );
+            },
           },
-        },
-      ]}
-      dataSource={data?.data}
-    />
+        ]}
+        dataSource={data?.data}
+      />
+    </>
   );
 };
 

@@ -1,115 +1,54 @@
 "use client";
+
+import {
+  Button,
+  Dropdown,
+  MenuProps,
+  Space,
+  Table,
+  TableColumnsType,
+} from "antd";
+import { ChevronDown, FilePenLine, Plus, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { Button, Dropdown, Space, Table, Tag } from "antd";
-import type { MenuProps, TableColumnsType } from "antd";
-import { ChevronDown, Eye, FilePenLine, Plus, Trash } from "lucide-react";
+import { PermissionType } from "../../../types/types";
 import { TableRowSelection } from "antd/es/table/interface";
 import { useQuery } from "@tanstack/react-query";
-import { getPermissionsOfUser, getUsers } from "../../../../lib/http/api";
-import { UserDataType } from "../../../../types/types";
-import { useRouter } from "next/navigation";
-// import {
-// UserContext,
-// UserContextType,
-// } from "../../../../lib/context/userContext";
+import { getPermissions, getPermissionsOfUser } from "../../../lib/http/api";
 
-const columns: TableColumnsType<UserDataType> = [
+const columns: TableColumnsType<PermissionType> = [
   {
     title: "Name",
     dataIndex: "name",
   },
   {
-    title: "E-mail",
-    dataIndex: "email",
-  },
-  {
-    title: "Roles",
-    dataIndex: "role",
-    render(value, record) {
-      return (
-        <>
-          {record.roles.map((role) => (
-            <Tag
-              key={role._id}
-              color={
-                role.name === "admin"
-                  ? "green"
-                  : role.name === "editor"
-                  ? "blue"
-                  : "red"
-              }
-            >
-              {role.name}
-            </Tag>
-          ))}
-        </>
-      );
-    },
-  },
-  {
-    title: "Permission",
-    dataIndex: "permission",
-
-    render(value, record) {
-      return (
-        <>
-          {record.roles.map((role) =>
-            role.permissions.map((permission) => (
-              <Tag
-                key={permission._id}
-              >{`${permission.name}/${permission.action}`}</Tag>
-            ))
-          )}
-        </>
-      );
-    },
+    title: "Action",
+    dataIndex: "action",
   },
 ];
 
-const UserTable = () => {
+const PermissionViewTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  // const { user } = React.useContext(UserContext) as UserContextType;
-
   const router = useRouter();
+
+  const { data: userPermissions } = useQuery({
+    queryKey: ["permissions", "permission"],
+    queryFn: () => getPermissionsOfUser("permission"),
+  });
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["users"],
-    queryFn: getUsers,
+    queryFn: getPermissions,
   });
 
-  const { data: userPermissions } = useQuery({
-    queryKey: ["permissions", "users"],
-    queryFn: () => getPermissionsOfUser("user"),
-  });
-
-  const items: MenuProps["items"] = [
-    {
-      label: "View",
-      key: "1",
-      icon: <Eye />,
-      disabled: !userPermissions?.includes("read"),
-    },
-    {
-      label: "Edit/Update",
-      key: "2",
-      icon: <FilePenLine />,
-      disabled: !userPermissions?.includes("edit/update"),
-    },
-    {
-      label: "Delete",
-      key: "3",
-      icon: <Trash />,
-      danger: true,
-      disabled: !userPermissions?.includes("delete"),
-    },
-  ];
+  console.log(data);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
-  const rowSelection: TableRowSelection<UserDataType> = {
+  const rowSelection: TableRowSelection<PermissionType> = {
     selectedRowKeys,
     onChange: onSelectChange,
     selections: [
@@ -147,13 +86,24 @@ const UserTable = () => {
     ],
   };
 
+  const items: MenuProps["items"] = [
+    {
+      label: "Edit/Update",
+      key: "2",
+      icon: <FilePenLine />,
+      disabled: !userPermissions?.includes("edit/update"),
+    },
+    {
+      label: "Delete",
+      key: "3",
+      icon: <Trash />,
+      danger: true,
+      disabled: !userPermissions?.includes("delete"),
+    },
+  ];
+
   return (
-    <Space
-      direction="vertical"
-      style={{
-        alignItems: "end",
-      }}
-    >
+    <div>
       <Button
         type="primary"
         style={{
@@ -166,6 +116,7 @@ const UserTable = () => {
       >
         Create User
       </Button>
+
       <Table
         rowKey="_id"
         loading={isLoading || isFetching}
@@ -196,8 +147,8 @@ const UserTable = () => {
         ]}
         dataSource={data}
       />
-    </Space>
+    </div>
   );
 };
 
-export default UserTable;
+export default PermissionViewTable;
