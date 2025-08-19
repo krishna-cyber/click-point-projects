@@ -26,3 +26,8 @@ export interface RegisterUserType {
   confirm?: string;
   roles: string[];
 }
+
+export interface CreateRoleType {
+  name: string;
+  permissions: string[];
+}

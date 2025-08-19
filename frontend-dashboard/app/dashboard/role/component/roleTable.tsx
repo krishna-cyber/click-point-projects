@@ -110,7 +110,7 @@ const RolesTable = () => {
           marginRight: "20px",
         }}
         onClick={() => {
-          router.push("/dashboard/users/create");
+          router.push("/dashboard/role/create");
         }}
         icon={<Plus />}
       >
@@ -144,7 +144,7 @@ const RolesTable = () => {
                           queryClient.invalidateQueries({
                             queryKey: ["roles"],
                           });
-                          message.info("Role has been deleted success");
+                          message.info("Role has been deleted successfully");
                         },
                       },
                     ],

@@ -8,10 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getPermissionsOfUser, getUsers } from "../../../../lib/http/api";
 import { UserDataType } from "../../../../types/types";
 import { useRouter } from "next/navigation";
-// import {
-// UserContext,
-// UserContextType,
-// } from "../../../../lib/context/userContext";
 
 const columns: TableColumnsType<UserDataType> = [
   {
