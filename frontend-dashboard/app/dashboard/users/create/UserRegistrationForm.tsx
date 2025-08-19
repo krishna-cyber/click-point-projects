@@ -5,6 +5,7 @@ import { Button, Form, Input, message, Select, Typography } from "antd";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, getRoles } from "../../../../lib/http/api";
 import { RegisterUserType } from "../../../../types/types";
+import { useRouter } from "next/navigation";
 
 const { Title } = Typography;
 
@@ -35,6 +36,8 @@ const tailFormItemLayout = {
 };
 
 const UserRegistrationForm: React.FC = () => {
+  const router = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
   const registerUser = useMutation({
     mutationFn: (data: RegisterUserType) => {
       return api.post("/users", data);
@@ -50,16 +53,17 @@ const UserRegistrationForm: React.FC = () => {
 
   const onFinish = (values: RegisterUserType) => {
     delete values?.confirm;
-    console.log("Received values of form: ", values);
+
     registerUser.mutate(values);
 
-    if (registerUser.isSuccess) {
-      message.info("User registered successfully!");
-    }
+    messageApi.info("User registered successfully!");
+    form.resetFields();
+    router.push("/dashboard/users");
   };
 
   return (
     <>
+      {contextHolder}
       <Title>User Registration Form</Title>
       <Form
         {...formItemLayout}
