@@ -1,20 +1,17 @@
 "use client";
 
-import {
-  Button,
-  Dropdown,
-  MenuProps,
-  Space,
-  Table,
-  TableColumnsType,
-} from "antd";
+import { Button, Dropdown, Space, Table, TableColumnsType } from "antd";
 import { ChevronDown, FilePenLine, Plus, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { PermissionType } from "../../../types/types";
 import { TableRowSelection } from "antd/es/table/interface";
 import { useQuery } from "@tanstack/react-query";
-import { getPermissions, getPermissionsOfUser } from "../../../lib/http/api";
+import {
+  deletePermissionById,
+  getPermissions,
+  getPermissionsOfUser,
+} from "../../../lib/http/api";
 
 const columns: TableColumnsType<PermissionType> = [
   {
@@ -40,8 +37,6 @@ const PermissionViewTable = () => {
     queryKey: ["users"],
     queryFn: getPermissions,
   });
-
-  console.log(data);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
@@ -86,22 +81,6 @@ const PermissionViewTable = () => {
     ],
   };
 
-  const items: MenuProps["items"] = [
-    {
-      label: "Edit/Update",
-      key: "2",
-      icon: <FilePenLine />,
-      disabled: !userPermissions?.includes("edit/update"),
-    },
-    {
-      label: "Delete",
-      key: "3",
-      icon: <Trash />,
-      danger: true,
-      disabled: !userPermissions?.includes("delete"),
-    },
-  ];
-
   return (
     <div>
       <Button
@@ -114,7 +93,7 @@ const PermissionViewTable = () => {
         }}
         icon={<Plus />}
       >
-        Create User
+        Create Permission
       </Button>
 
       <Table
@@ -127,11 +106,30 @@ const PermissionViewTable = () => {
           {
             title: "Actions",
             key: "actions",
-            render() {
+            render(value, record) {
               return (
                 <Dropdown
                   menu={{
-                    items: items,
+                    items: [
+                      {
+                        label: "Edit/Update",
+                        key: "2",
+                        icon: <FilePenLine />,
+                        disabled: !userPermissions?.includes("edit/update"),
+                      },
+                      {
+                        label: "Delete",
+                        key: "3",
+                        onClick: () => {
+                          if (record._id) {
+                            deletePermissionById(record._id);
+                          }
+                        },
+                        icon: <Trash />,
+                        danger: true,
+                        disabled: !userPermissions?.includes("delete"),
+                      },
+                    ],
                   }}
                 >
                   <Button>

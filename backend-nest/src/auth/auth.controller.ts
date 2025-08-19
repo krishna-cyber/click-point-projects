@@ -7,6 +7,7 @@ import {
   Delete,
   Res,
   UnauthorizedException,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginAuthDTO } from './dto/login-auth.dto';
@@ -27,14 +28,14 @@ export class AuthController {
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
-        maxAge: 600000, //1hr
+        expires: new Date(Date.now() + 1000 * 60), //1min
       });
 
       response.cookie('refreshToken', refresh_token, {
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), //1d
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24), // 1 day
       });
 
       response.json({
@@ -50,6 +51,21 @@ export class AuthController {
       console.error('Login error:', error);
       throw new UnauthorizedException('Invalid credentials');
     }
+  }
+
+  @Get('/refresh')
+  async refreshToken(
+    @Req() request: express.Request,
+    @Res({ passthrough: true }) response: express.Response,
+  ) {
+    if (!request?.cookies['refreshToken']) {
+      throw new UnauthorizedException('Refresh token not found');
+    }
+
+    const access_token = await this.authService.refreshToken(
+      request.cookies['refreshToken'] as string,
+    );
+    response.cookie('accessToken', access_token);
   }
 
   @Get()

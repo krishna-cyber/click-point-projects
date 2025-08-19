@@ -25,7 +25,6 @@ export async function login(previousState: PreviousState, formData: FormData) {
       email,
       password,
     });
-    console.log(response);
 
     const setCookieHeaders = response.headers["set-cookie"];
 
@@ -42,6 +41,9 @@ export async function login(previousState: PreviousState, formData: FormData) {
     const refreshToken = setCookieHeaders.find((cookie) =>
       cookie.includes("refreshToken")
     );
+
+    console.log("Access Token:", accessToken);
+    console.log("Refresh Token:", refreshToken);
 
     if (!accessToken || !refreshToken) {
       return {
@@ -65,11 +67,11 @@ export async function login(previousState: PreviousState, formData: FormData) {
     (await cookies()).set({
       name: "refreshToken",
       value: parsedRefreshToken.refreshToken as string,
-      expires: new Date(parsedAccessToken.Expires as string),
-      httpOnly: (parsedAccessToken.httpOnly as unknown as boolean) || true,
-      path: parsedAccessToken.Path,
-      sameSite: parsedAccessToken.Samesite as "strict",
-      domain: parsedAccessToken.Domain,
+      expires: new Date(parsedRefreshToken.Expires as string),
+      httpOnly: (parsedRefreshToken.httpOnly as unknown as boolean) || true,
+      path: parsedRefreshToken.Path,
+      sameSite: parsedRefreshToken.Samesite as "strict",
+      domain: parsedRefreshToken.Domain,
     });
 
     return {

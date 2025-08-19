@@ -33,7 +33,7 @@ export class RoleService {
   }
 
   async findAll() {
-    return await this.roleModel.find();
+    return await this.roleModel.find().populate('permissions');
   }
 
   findOne(id: string) {

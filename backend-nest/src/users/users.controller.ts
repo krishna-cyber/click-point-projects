@@ -7,7 +7,6 @@ import {
   Param,
   Patch,
   Post,
-  // Res,
 } from '@nestjs/common';
 import { CreateUsersDTO } from './dto/create-users.dto';
 import { UsersService } from './users.service';

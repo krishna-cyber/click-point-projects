@@ -1,9 +1,5 @@
 "use client";
 import { Button, Image, Layout, Menu, theme, Avatar } from "antd";
-
-// To use a local logo place an image file (e.g. cms-logo.png) inside the project root /public folder (create if missing)
-// then reference it as src="/cms-logo.png". Avoid spaces in filenames.
-
 import React, { useState, useMemo, useContext } from "react";
 import {
   Blocks,
@@ -40,10 +36,14 @@ const LayoutPage: React.FC<LayoutPageProps> = ({ children }) => {
       pathname === "/dashboard/contents"
     ) {
       return "4";
+    } else if (pathname === "/dashboard/permission") {
+      return "5";
+    } else if (pathname === "/dashboard/role") {
+      return "6";
     } else if (pathname === "/dashboard") {
       return "1";
     } else {
-      return "1"; // Default to dashboard
+      return "1"; 
     }
   }, [pathname]);
 

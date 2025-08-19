@@ -1,321 +1,70 @@
 "use client";
-import React, { useState } from "react";
-import { Button, Dropdown, Space, message, Table, Tag } from "antd";
-import type { MenuProps, TableColumnsType } from "antd";
-import { ChevronDown, Eye, FilePenLine, Share2, Trash } from "lucide-react";
+
+import {
+  Button,
+  Dropdown,
+  message,
+  Space,
+  Table,
+  TableColumnsType,
+  Tag,
+} from "antd";
 import { TableRowSelection } from "antd/es/table/interface";
+import { ChevronDown, Plus, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { RoleType } from "../../../../types/types";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  deleteRoleById,
+  getPermissionsOfUser,
+  getRoles,
+} from "../../../../lib/http/api";
 
-interface PermissionSchema {
-  name: string;
-  status: string;
-  slug: string;
-}
-
-export interface DataType {
-  name: string;
-  email: string;
-  roles: string;
-  permission: PermissionSchema[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-const handleMenuClick: MenuProps["onClick"] = (e) => {
-  message.info("Click on menu item.");
-  console.log("click", e);
-};
-
-const getMenuItems = (permissions: PermissionSchema[]) => {
-  return [
-    {
-      label: "View",
-      key: "1",
-      icon: <Eye />,
-      disabled: !permissions.some((p) => p.name == "view"),
-    },
-    {
-      label: "Edit",
-      key: "2",
-      icon: <FilePenLine />,
-      disabled: !permissions.some((p) => p.name == "edit"),
-    },
-    {
-      label: "Share",
-      key: "3",
-      icon: <Share2 />,
-      disabled: !permissions.some((p) => p.name == "share"),
-    },
-    {
-      label: "Delete",
-      key: "4",
-      icon: <Trash />,
-      danger: true,
-      disabled: !permissions.some((p) => p.name == "delete"),
-    },
-  ];
-};
-const columns: TableColumnsType<DataType> = [
+const columns: TableColumnsType<RoleType> = [
   {
     title: "Name",
     dataIndex: "name",
   },
   {
-    title: "E-mail",
-    dataIndex: "email",
-  },
-  {
-    title: "Roles",
-    dataIndex: "roles",
-  },
-  {
-    title: "Permission",
-    dataIndex: "permission",
+    title: "Permissions",
+    dataIndex: "permissons",
     render(value, record) {
       return (
         <>
-          {record.permission.map((permission) => {
-            return <Tag key={permission.slug}>{permission.name}</Tag>;
-          })}
+          {record.permissions.map((permission) => (
+            <Tag key={permission._id}>
+              {`${permission.name}/${permission.action}`}
+            </Tag>
+          ))}
         </>
       );
     },
   },
 ];
 
-const dataSource = [
-  {
-    name: "Alice Johnson",
-    email: "alice@example.com",
-    roles: "admin",
-    permission: [
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "view", status: "active", slug: "/view" },
-      { name: "delete", status: "active", slug: "/delete" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T10:00:00.000Z",
-    updatedAt: "2025-08-13T10:00:00.000Z",
-  },
-  {
-    name: "Bob Smith",
-    email: "bob@example.com",
-    roles: "manager",
-    permission: [
-      { name: "view", status: "active", slug: "/view" },
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T10:05:00.000Z",
-    updatedAt: "2025-08-13T10:05:00.000Z",
-  },
-  {
-    name: "Charlie Brown",
-    email: "charlie@example.com",
-    roles: "user",
-    permission: [{ name: "view", status: "active", slug: "/view" }],
-    createdAt: "2025-08-13T10:10:00.000Z",
-    updatedAt: "2025-08-13T10:10:00.000Z",
-  },
-  {
-    name: "Diana Prince",
-    email: "diana@example.com",
-    roles: "admin",
-    permission: [
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "view", status: "active", slug: "/view" },
-      { name: "delete", status: "active", slug: "/delete" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T10:15:00.000Z",
-    updatedAt: "2025-08-13T10:15:00.000Z",
-  },
-  {
-    name: "Eve Adams",
-    email: "eve@example.com",
-    roles: "manager",
-    permission: [
-      { name: "view", status: "active", slug: "/view" },
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T10:20:00.000Z",
-    updatedAt: "2025-08-13T10:20:00.000Z",
-  },
-  {
-    name: "Frank Miller",
-    email: "frank@example.com",
-    roles: "user",
-    permission: [{ name: "view", status: "active", slug: "/view" }],
-    createdAt: "2025-08-13T10:25:00.000Z",
-    updatedAt: "2025-08-13T10:25:00.000Z",
-  },
-  {
-    name: "Grace Lee",
-    email: "grace@example.com",
-    roles: "admin",
-    permission: [
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "view", status: "active", slug: "/view" },
-      { name: "delete", status: "active", slug: "/delete" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T10:30:00.000Z",
-    updatedAt: "2025-08-13T10:30:00.000Z",
-  },
-  {
-    name: "Henry Ford",
-    email: "henry@example.com",
-    roles: "manager",
-    permission: [
-      { name: "view", status: "active", slug: "/view" },
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T10:35:00.000Z",
-    updatedAt: "2025-08-13T10:35:00.000Z",
-  },
-  {
-    name: "Ivy Parker",
-    email: "ivy@example.com",
-    roles: "user",
-    permission: [{ name: "view", status: "active", slug: "/view" }],
-    createdAt: "2025-08-13T10:40:00.000Z",
-    updatedAt: "2025-08-13T10:40:00.000Z",
-  },
-  {
-    name: "Jack Black",
-    email: "jack@example.com",
-    roles: "admin",
-    permission: [
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "view", status: "active", slug: "/view" },
-      { name: "delete", status: "active", slug: "/delete" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T10:45:00.000Z",
-    updatedAt: "2025-08-13T10:45:00.000Z",
-  },
-  {
-    name: "Karen White",
-    email: "karen@example.com",
-    roles: "manager",
-    permission: [
-      { name: "view", status: "active", slug: "/view" },
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T10:50:00.000Z",
-    updatedAt: "2025-08-13T10:50:00.000Z",
-  },
-  {
-    name: "Liam Nelson",
-    email: "liam@example.com",
-    roles: "user",
-    permission: [{ name: "view", status: "active", slug: "/view" }],
-    createdAt: "2025-08-13T10:55:00.000Z",
-    updatedAt: "2025-08-13T10:55:00.000Z",
-  },
-  {
-    name: "Mia Wong",
-    email: "mia@example.com",
-    roles: "admin",
-    permission: [
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "view", status: "active", slug: "/view" },
-      { name: "delete", status: "active", slug: "/delete" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T11:00:00.000Z",
-    updatedAt: "2025-08-13T11:00:00.000Z",
-  },
-  {
-    name: "Noah Davis",
-    email: "noah@example.com",
-    roles: "manager",
-    permission: [
-      { name: "view", status: "active", slug: "/view" },
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T11:05:00.000Z",
-    updatedAt: "2025-08-13T11:05:00.000Z",
-  },
-  {
-    name: "Olivia Green",
-    email: "olivia@example.com",
-    roles: "user",
-    permission: [{ name: "view", status: "active", slug: "/view" }],
-    createdAt: "2025-08-13T11:10:00.000Z",
-    updatedAt: "2025-08-13T11:10:00.000Z",
-  },
-  {
-    name: "Paul Harris",
-    email: "paul@example.com",
-    roles: "admin",
-    permission: [
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "view", status: "active", slug: "/view" },
-      { name: "delete", status: "active", slug: "/delete" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T11:15:00.000Z",
-    updatedAt: "2025-08-13T11:15:00.000Z",
-  },
-  {
-    name: "Quinn Taylor",
-    email: "quinn@example.com",
-    roles: "manager",
-    permission: [
-      { name: "view", status: "active", slug: "/view" },
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T11:20:00.000Z",
-    updatedAt: "2025-08-13T11:20:00.000Z",
-  },
-  {
-    name: "Rachel Scott",
-    email: "rachel@example.com",
-    roles: "user",
-    permission: [{ name: "view", status: "active", slug: "/view" }],
-    createdAt: "2025-08-13T11:25:00.000Z",
-    updatedAt: "2025-08-13T11:25:00.000Z",
-  },
-  {
-    name: "Samuel King",
-    email: "samuel@example.com",
-    roles: "admin",
-    permission: [
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "view", status: "active", slug: "/view" },
-      { name: "delete", status: "active", slug: "/delete" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T11:30:00.000Z",
-    updatedAt: "2025-08-13T11:30:00.000Z",
-  },
-  {
-    name: "Tina Brooks",
-    email: "tina@example.com",
-    roles: "manager",
-    permission: [
-      { name: "view", status: "active", slug: "/view" },
-      { name: "edit", status: "active", slug: "/edit" },
-      { name: "share", status: "active", slug: "/share" },
-    ],
-    createdAt: "2025-08-13T11:35:00.000Z",
-    updatedAt: "2025-08-13T11:35:00.000Z",
-  },
-];
-const UserTable = () => {
+const RolesTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const router = useRouter();
+
+  const queryClient = useQueryClient();
+
+  const { data: userPermissions } = useQuery({
+    queryKey: ["permissions", "permission"],
+    queryFn: () => getPermissionsOfUser("role"),
+  });
+
+  const { data, isLoading, isFetching } = useQuery({
+    queryKey: ["roles"],
+    queryFn: getRoles,
+  });
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
-  const rowSelection: TableRowSelection<DataType> = {
+  const rowSelection: TableRowSelection<RoleType> = {
     selectedRowKeys,
     onChange: onSelectChange,
     selections: [
@@ -354,37 +103,68 @@ const UserTable = () => {
   };
 
   return (
-    <Table
-      size="small"
-      rowSelection={rowSelection}
-      rowKey={"email"}
-      columns={[
-        ...columns,
-        {
-          title: "Actions",
-          key: "actions",
-          render(value, record) {
-            return (
-              <Dropdown
-                menu={{
-                  items: getMenuItems(record.permission),
-                  onClick: handleMenuClick,
-                }}
-              >
-                <Button>
-                  <Space>
-                    Actions
-                    <ChevronDown />
-                  </Space>
-                </Button>
-              </Dropdown>
-            );
+    <div>
+      <Button
+        type="primary"
+        style={{
+          marginRight: "20px",
+        }}
+        onClick={() => {
+          router.push("/dashboard/users/create");
+        }}
+        icon={<Plus />}
+      >
+        Create Role
+      </Button>
+
+      <Table
+        rowKey="_id"
+        loading={isLoading || isFetching}
+        size="small"
+        rowSelection={rowSelection}
+        columns={[
+          ...columns,
+          {
+            title: "Actions",
+            key: "actions",
+
+            render(value, record) {
+              return (
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        label: "Delete",
+                        key: "3",
+                        icon: <Trash />,
+                        danger: true,
+                        disabled: !userPermissions?.includes("delete"),
+                        onClick: () => {
+                          deleteRoleById(record._id);
+                          queryClient.invalidateQueries({
+                            queryKey: ["roles"],
+                          });
+                          message.info("Role has been deleted success");
+                        },
+                      },
+                    ],
+                  }}
+                >
+                  <Button>
+                    <Space>
+                      Actions
+                      <ChevronDown />
+                    </Space>
+                  </Button>
+                </Dropdown>
+              );
+            },
           },
-        },
-      ]}
-      dataSource={dataSource}
-    />
+        ]}
+        dataSource={data}
+      />
+    </div>
   );
 };
 
-export default UserTable;
+export default RolesTable;

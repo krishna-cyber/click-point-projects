@@ -28,7 +28,7 @@ const columns: TableColumnsType<UserDataType> = [
     render(value, record) {
       return (
         <>
-          {record.roles.map((role) => (
+          {record?.roles?.map((role) => (
             <Tag
               key={role._id}
               color={
@@ -53,7 +53,7 @@ const columns: TableColumnsType<UserDataType> = [
     render(value, record) {
       return (
         <>
-          {record.roles.map((role) =>
+          {record?.roles?.map((role) =>
             role.permissions.map((permission) => (
               <Tag
                 key={permission._id}

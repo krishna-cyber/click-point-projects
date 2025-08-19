@@ -1,5 +1,10 @@
 import axios from "axios";
-import { PermissionType, RoleType, UserDataType } from "../../types/types";
+import {
+  PermissionType,
+  RegisterUserType,
+  RoleType,
+  UserDataType,
+} from "../../types/types";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -11,11 +16,9 @@ export const api = axios.create({
 });
 
 export const refreshToken = async () => {
-  return axios.post(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/auth/refresh`,
-    {},
-    { withCredentials: true }
-  );
+  return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
+    withCredentials: true,
+  });
 };
 
 //response interceptor to refresh token on receiving token expired error
@@ -25,24 +28,23 @@ api.interceptors.response.use(
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
     return response;
+  },
+
+  async function (error) {
+    const originalRequest = error.config;
+
+    if (error?.response?.status === 401 && !originalRequest._retry) {
+      try {
+        originalRequest._retry = true;
+        await refreshToken();
+        return axios.request(originalRequest);
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    }
+
+    return Promise.reject(error);
   }
-  // async function (error) {
-  //   const originalRequest = error.config;
-
-  //   // const headers = { ...originalRequest.headers };
-
-  //   if (error?.response?.status === 401 && !originalRequest._retry) {
-  //     try {
-  //       await refreshToken();
-  //       originalRequest._retry = true;
-  //       return axios.request(originalRequest);
-  //     } catch (error) {
-  //       return Promise.reject(error);
-  //     }
-  //   }
-
-  //   return Promise.reject(error);
-  // }
 );
 
 export const getCategories = () => api.get(`category`);
@@ -51,6 +53,7 @@ export const getPermissions = async (): Promise<PermissionType[]> => {
   const response = await api.get(`permission`);
   return response.data;
 };
+
 // Returns Promise<User[]> (data only)
 export const getUsers = async () => {
   const res = await api.get("/users");
@@ -67,5 +70,14 @@ export const getRoles = async () => {
   return res.data;
 };
 
-// If you still need the full AxiosResponse with headers/status, you can expose:
-// export const getUsersResponse = () => api.get<User[]>("/users");
+export const deletePermissionById = async (id: string) => {
+  return await api.delete(`/permission/${id}`);
+};
+
+export const deleteRoleById = async (id: string) => {
+  return await api.delete(`/role/${id}`);
+};
+
+export const registerUser = async (data: RegisterUserType) => {
+  return await api.post("/auth/register", data);
+};

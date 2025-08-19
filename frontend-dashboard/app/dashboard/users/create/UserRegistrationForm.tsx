@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import { Button, Form, Input, Select, Typography } from "antd";
-import { useQuery } from "@tanstack/react-query";
-import { getRoles } from "../../../../lib/http/api";
+import { Button, Form, Input, message, Select, Typography } from "antd";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { api, getRoles } from "../../../../lib/http/api";
+import { RegisterUserType } from "../../../../types/types";
 
 const { Title } = Typography;
 
@@ -34,6 +35,12 @@ const tailFormItemLayout = {
 };
 
 const UserRegistrationForm: React.FC = () => {
+  const registerUser = useMutation({
+    mutationFn: (data: RegisterUserType) => {
+      return api.post("/users", data);
+    },
+  });
+
   const [form] = Form.useForm();
 
   const { data: roles } = useQuery({
@@ -41,8 +48,14 @@ const UserRegistrationForm: React.FC = () => {
     queryFn: getRoles,
   });
 
-  const onFinish = (values: any) => {
+  const onFinish = (values: RegisterUserType) => {
+    delete values?.confirm;
     console.log("Received values of form: ", values);
+    registerUser.mutate(values);
+
+    if (registerUser.isSuccess) {
+      message.info("User registered successfully!");
+    }
   };
 
   return (

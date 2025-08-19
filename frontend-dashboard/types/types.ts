@@ -15,6 +15,14 @@ export interface UserDataType {
   name: string;
   email: string;
   roles: RoleType[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface RegisterUserType {
+  name: string;
+  email: string;
+  password: string;
+  confirm?: string;
+  roles: string[];
 }
