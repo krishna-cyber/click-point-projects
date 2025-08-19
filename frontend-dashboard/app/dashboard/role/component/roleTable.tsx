@@ -44,6 +44,7 @@ const columns: TableColumnsType<RoleType> = [
 ];
 
 const RolesTable = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
 
@@ -104,6 +105,7 @@ const RolesTable = () => {
 
   return (
     <div>
+      {contextHolder}
       <Button
         type="primary"
         style={{
@@ -134,8 +136,22 @@ const RolesTable = () => {
                   menu={{
                     items: [
                       {
-                        label: "Delete",
+                        label: "Edit/Update",
                         key: "3",
+                        icon: <Trash />,
+                        danger: true,
+                        disabled: !userPermissions?.includes("edit/update"),
+                        // onClick: () => {
+                        //   updateRoleById(record._id);
+                        //   queryClient.invalidateQueries({
+                        //     queryKey: ["roles"],
+                        //   });
+                        //   message.info("Role has been updated successfully");
+                        // },
+                      },
+                      {
+                        label: "Delete",
+                        key: "4",
                         icon: <Trash />,
                         danger: true,
                         disabled: !userPermissions?.includes("delete"),
@@ -144,7 +160,7 @@ const RolesTable = () => {
                           queryClient.invalidateQueries({
                             queryKey: ["roles"],
                           });
-                          message.info("Role has been deleted successfully");
+                          messageApi.info("Role has been deleted successfully");
                         },
                       },
                     ],

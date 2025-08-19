@@ -31,3 +31,8 @@ export interface CreateRoleType {
   name: string;
   permissions: string[];
 }
+
+export interface CreatePermissionType {
+  name: string;
+  action: string;
+}

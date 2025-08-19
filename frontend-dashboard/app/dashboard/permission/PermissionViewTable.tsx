@@ -34,7 +34,7 @@ const PermissionViewTable = () => {
   });
 
   const { data, isLoading, isFetching } = useQuery({
-    queryKey: ["users"],
+    queryKey: ["userPermissions"],
     queryFn: getPermissions,
   });
 
@@ -89,7 +89,7 @@ const PermissionViewTable = () => {
           marginRight: "20px",
         }}
         onClick={() => {
-          router.push("/dashboard/users/create");
+          router.push("/dashboard/permission/create");
         }}
         icon={<Plus />}
       >
