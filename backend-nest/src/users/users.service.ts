@@ -47,10 +47,9 @@ export class UsersService {
     if (roles) {
       // You can process filtered permissions here if needed, e.g.:
       const filteredPermissions = roles[0]
-        .filter((perm) => perm.name == name)
+        ?.filter((perm) => perm.name == name)
         .map((perm) => perm.action);
-      console.log(`permissions after filter,`, filteredPermissions);
-      return filteredPermissions;
+      return filteredPermissions || [];
     } else {
       return [];
     }

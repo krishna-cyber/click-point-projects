@@ -34,7 +34,10 @@ export class RoleController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
-    return this.roleService.update(+id, updateRoleDto);
+    if (!Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Not a valid role id');
+    }
+    return this.roleService.update(id, updateRoleDto);
   }
 
   @Delete(':id')

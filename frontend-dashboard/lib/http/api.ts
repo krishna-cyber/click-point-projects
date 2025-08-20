@@ -60,8 +60,8 @@ export const getUsers = async () => {
   return res.data as UserDataType[];
 };
 
-export const getPermissionsOfUser = async (name: string) => {
-  const res = await api.get(`/permission/list/${name}`);
+export const getPermissionsOfUser = async (userId: string, name: string) => {
+  const res = await api.get(`/user/${userId}/permission/${name}`);
   return res.data as string[];
 };
 

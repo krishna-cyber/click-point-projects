@@ -8,6 +8,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getPermissionsOfUser, getUsers } from "../../../../lib/http/api";
 import { UserDataType } from "../../../../types/types";
 import { useRouter } from "next/navigation";
+import {
+  UserContext,
+  UserContextType,
+} from "../../../../lib/context/userContext";
 
 const columns: TableColumnsType<UserDataType> = [
   {
@@ -64,7 +68,7 @@ const columns: TableColumnsType<UserDataType> = [
 
 const UserTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  // const { user } = React.useContext(UserContext) as UserContextType;
+  const { user } = React.useContext(UserContext) as UserContextType;
 
   const router = useRouter();
 
@@ -74,9 +78,11 @@ const UserTable = () => {
   });
 
   const { data: userPermissions } = useQuery({
-    queryKey: ["permissions", "users"],
-    queryFn: () => getPermissionsOfUser("user"),
+    queryKey: ["permissions", "user", user?._id],
+    queryFn: () => getPermissionsOfUser(user?._id, "user"),
   });
+
+  console.log("userPermissions", userPermissions);
 
   const items: MenuProps["items"] = [
     {

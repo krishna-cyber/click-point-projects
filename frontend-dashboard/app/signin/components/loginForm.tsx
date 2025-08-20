@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useActionState, useContext } from "react";
 import { UserContext, UserContextType } from "../../../lib/context/userContext";
+import { UserDataType } from "../../../types/types";
 
 const LoginForm = () => {
   const { saveUser } = useContext(UserContext) as UserContextType;
@@ -12,7 +13,13 @@ const LoginForm = () => {
   // const searchParams = useSearchParams();
   // const redirect = searchParams.get("redirectTo")?.toString();
 
-  const initialState = {
+  interface LoginFormState {
+    type: "success" | "error" | "";
+    message: string;
+    user: UserDataType | null;
+  }
+
+  const initialState: LoginFormState = {
     type: "",
     message: "",
     user: null,
@@ -20,7 +27,11 @@ const LoginForm = () => {
   const [state, formAction, isPending] = useActionState(login, initialState);
 
   if (state.type == "success") {
-    saveUser(state.user);
+    if (state.user) {
+      // Save user data to context
+      saveUser(state.user);
+    }
+
     router.push("/dashboard");
   }
 

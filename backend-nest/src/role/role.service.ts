@@ -40,8 +40,8 @@ export class RoleService {
     return `This action returns a #${id} role`;
   }
 
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
+  update(id: string, updateRoleDto: UpdateRoleDto) {
+    return this.roleModel.findByIdAndUpdate(id, updateRoleDto);
   }
 
   async remove(_id: string) {

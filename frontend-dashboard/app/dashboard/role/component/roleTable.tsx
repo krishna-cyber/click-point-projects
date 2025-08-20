@@ -10,7 +10,7 @@ import {
   Tag,
 } from "antd";
 import { TableRowSelection } from "antd/es/table/interface";
-import { ChevronDown, Plus, Trash } from "lucide-react";
+import { ChevronDown, Plus, Trash, UserRoundPen } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { RoleType } from "../../../../types/types";
@@ -138,7 +138,7 @@ const RolesTable = () => {
                       {
                         label: "Edit/Update",
                         key: "3",
-                        icon: <Trash />,
+                        icon: <UserRoundPen />,
                         danger: true,
                         disabled: !userPermissions?.includes("edit/update"),
                         // onClick: () => {
