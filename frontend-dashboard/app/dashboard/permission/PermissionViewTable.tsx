@@ -12,6 +12,7 @@ import {
   getPermissions,
   getPermissionsOfUser,
 } from "../../../lib/http/api";
+import { UserContext, UserContextType } from "../../../lib/context/userContext";
 
 const columns: TableColumnsType<PermissionType> = [
   {
@@ -25,12 +26,17 @@ const columns: TableColumnsType<PermissionType> = [
 ];
 
 const PermissionViewTable = () => {
+  const { user } = React.useContext(UserContext) as UserContextType;
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
 
   const { data: userPermissions } = useQuery({
-    queryKey: ["permissions", "permission"],
-    queryFn: () => getPermissionsOfUser("permission"),
+    queryKey: ["permissions", "user", user?._id],
+    queryFn: () =>
+      user?._id
+        ? getPermissionsOfUser(user._id, "permission")
+        : Promise.resolve([]),
+    enabled: !!user?._id,
   });
 
   const { data, isLoading, isFetching } = useQuery({

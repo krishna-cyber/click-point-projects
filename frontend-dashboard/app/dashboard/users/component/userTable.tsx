@@ -79,7 +79,9 @@ const UserTable = () => {
 
   const { data: userPermissions } = useQuery({
     queryKey: ["permissions", "user", user?._id],
-    queryFn: () => getPermissionsOfUser(user?._id, "user"),
+    queryFn: () =>
+      user?._id ? getPermissionsOfUser(user?._id, "user") : Promise.resolve([]),
+    enabled: !!user?._id,
   });
 
   console.log("userPermissions", userPermissions);

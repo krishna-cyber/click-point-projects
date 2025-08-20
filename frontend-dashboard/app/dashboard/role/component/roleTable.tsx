@@ -20,6 +20,10 @@ import {
   getPermissionsOfUser,
   getRoles,
 } from "../../../../lib/http/api";
+import {
+  UserContext,
+  UserContextType,
+} from "../../../../lib/context/userContext";
 
 const columns: TableColumnsType<RoleType> = [
   {
@@ -44,6 +48,7 @@ const columns: TableColumnsType<RoleType> = [
 ];
 
 const RolesTable = () => {
+  const { user } = React.useContext(UserContext) as UserContextType;
   const [messageApi, contextHolder] = message.useMessage();
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const router = useRouter();
@@ -51,8 +56,10 @@ const RolesTable = () => {
   const queryClient = useQueryClient();
 
   const { data: userPermissions } = useQuery({
-    queryKey: ["permissions", "permission"],
-    queryFn: () => getPermissionsOfUser("role"),
+    queryKey: ["permissions", "permission", user?._id],
+    queryFn: () =>
+      user?._id ? getPermissionsOfUser(user._id, "role") : Promise.resolve([]),
+    enabled: !!user?._id,
   });
 
   const { data, isLoading, isFetching } = useQuery({
