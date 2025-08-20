@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   BadRequestException,
+  Put,
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -27,9 +28,22 @@ export class RoleController {
     return this.roleService.findAll();
   }
 
+  @Get(':role/permissions')
+  getPermissions(@Param('role') role: string) {
+    return this.roleService.findPermissions(role);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.roleService.findOne(id);
+  }
+
+  @Put(':name')
+  updateByName(
+    @Param('name') name: string,
+    @Body() updateRoleDto: UpdateRoleDto,
+  ) {
+    return this.roleService.updateByName(name, updateRoleDto);
   }
 
   @Patch(':id')

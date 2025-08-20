@@ -40,10 +40,36 @@ export class RoleService {
     return `This action returns a #${id} role`;
   }
 
-  update(id: string, updateRoleDto: UpdateRoleDto) {
-    return this.roleModel.findByIdAndUpdate(id, updateRoleDto);
+  async update(id: string, updateRoleDto: UpdateRoleDto) {
+    try {
+      return await this.roleModel.findByIdAndUpdate(id, updateRoleDto);
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        'Failed to update role',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
+  async updateByName(name: string, updateRoleDto: UpdateRoleDto) {
+    try {
+      return await this.roleModel.findOneAndUpdate({ name }, updateRoleDto, {
+        new: true,
+      });
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        'Failed to update role by name',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findPermissions(name: string) {
+    const role = await this.roleModel.findOne({ name });
+    return role?.permissions || [];
+  }
   async remove(_id: string) {
     return (await this.roleModel.deleteOne({ _id })).acknowledged;
   }
