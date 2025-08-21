@@ -42,9 +42,6 @@ export async function login(previousState: PreviousState, formData: FormData) {
       cookie.includes("refreshToken")
     );
 
-    console.log("Access Token:", accessToken);
-    console.log("Refresh Token:", refreshToken);
-
     if (!accessToken || !refreshToken) {
       return {
         type: "error",
