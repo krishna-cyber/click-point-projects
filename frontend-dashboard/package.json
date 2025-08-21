@@ -13,6 +13,7 @@
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@tanstack/react-query": "^5.85.0",
     "antd": "^5.26.7",
+    "antd-password-input-strength": "^2.0.1",
     "axios": "^1.11.0",
     "cookie": "^1.0.2",
     "lucide-react": "^0.539.0",

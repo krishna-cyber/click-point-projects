@@ -84,8 +84,6 @@ const UserTable = () => {
     enabled: !!user?._id,
   });
 
-  console.log("userPermissions", userPermissions);
-
   const items: MenuProps["items"] = [
     {
       label: "View",

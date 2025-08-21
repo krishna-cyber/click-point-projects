@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, getRoles } from "../../../../lib/http/api";
 import { RegisterUserType } from "../../../../types/types";
 import { useRouter } from "next/navigation";
+import { PasswordInput } from "antd-password-input-strength";
 
 const { Title } = Typography;
 
@@ -94,10 +95,20 @@ const UserRegistrationForm: React.FC = () => {
               required: true,
               message: "Please input your password!",
             },
+            {
+              validator: (_, value) => {
+                if (!value || value.length < 6) {
+                  return Promise.reject(
+                    new Error("Password must be at least 6 characters long")
+                  );
+                }
+                return Promise.resolve();
+              },
+            },
           ]}
           hasFeedback
         >
-          <Input.Password />
+          <PasswordInput />
         </Form.Item>
 
         <Form.Item

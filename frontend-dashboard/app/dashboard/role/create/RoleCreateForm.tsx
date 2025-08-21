@@ -24,7 +24,6 @@ const RoleCreateForm = () => {
   const [form] = Form.useForm();
 
   const onFinish = (values: CreateRoleType) => {
-    console.log("Received values of form: ", values);
     createRole.mutate(values);
 
     messageApi.info("Role created successfully!");

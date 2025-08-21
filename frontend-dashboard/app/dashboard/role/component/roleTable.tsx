@@ -56,10 +56,9 @@ const RolesTable = () => {
   const queryClient = useQueryClient();
 
   const { data: userPermissions } = useQuery({
-    queryKey: ["permissions", "permission", user?._id],
+    queryKey: ["permissions", "role", user?._id],
     queryFn: () =>
       user?._id ? getPermissionsOfUser(user._id, "role") : Promise.resolve([]),
-    enabled: !!user?._id,
   });
 
   const { data, isLoading, isFetching } = useQuery({
@@ -146,15 +145,10 @@ const RolesTable = () => {
                         label: "Edit/Update",
                         key: "3",
                         icon: <UserRoundPen />,
-                        danger: true,
                         disabled: !userPermissions?.includes("edit/update"),
-                        // onClick: () => {
-                        //   updateRoleById(record._id);
-                        //   queryClient.invalidateQueries({
-                        //     queryKey: ["roles"],
-                        //   });
-                        //   message.info("Role has been updated successfully");
-                        // },
+                        onClick: () => {
+                          router.push(`/dashboard/role/edit/${record.name}`);
+                        },
                       },
                       {
                         label: "Delete",

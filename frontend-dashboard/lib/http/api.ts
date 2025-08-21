@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  CreateRoleType,
   PermissionType,
   RegisterUserType,
   RoleType,
@@ -54,6 +55,17 @@ export const getPermissions = async (): Promise<PermissionType[]> => {
   return response.data;
 };
 
+export const getRolesPermissions = async (name: string) => {
+  console.log(name);
+  const res = await api.get(`/role/${name}/permissions`);
+  return res.data as string[];
+};
+
+export const updateRoleByName = async (name: string, data: CreateRoleType) => {
+  const res = await api.put(`/role/${name}`, { permissions: data.permissions });
+  return res.data;
+};
+
 // Returns Promise<User[]> (data only)
 export const getUsers = async () => {
   const res = await api.get("/users");
@@ -61,7 +73,7 @@ export const getUsers = async () => {
 };
 
 export const getPermissionsOfUser = async (userId: string, name: string) => {
-  const res = await api.get(`/user/${userId}/permission/${name}`);
+  const res = await api.get(`/users/${userId}/permission/${name}`);
   return res.data as string[];
 };
 
